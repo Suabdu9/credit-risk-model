@@ -1,0 +1,16 @@
+pandas
+numpy
+scipy
+matplotlib
+seaborn
+plotly
+scikit-learn
+scorecardpy
+mlflow
+fastapi
+uvicorn
+pydantic
+pytest
+joblib
+python-dotenv
+tqdm

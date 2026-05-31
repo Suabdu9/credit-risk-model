@@ -1,3 +1,11 @@
+# Project Overview
+
+This project develops an end-to-end credit risk scoring system for Bati Bank's Buy-Now-Pay-Later (BNPL) initiative using transaction data from the Xente eCommerce platform.
+
+Because the dataset does not contain a direct default label, customer behavioral patterns are used to construct a proxy credit risk target based on Recency, Frequency, and Monetary (RFM) analysis. The resulting model predicts customer risk levels and supports future lending decisions.
+
+The project follows an MLOps-oriented workflow including exploratory analysis, feature engineering, model development, experiment tracking, API deployment, containerization, testing, and CI/CD automation.
+
 # Credit Scoring Business Understanding
 
 ## 1. How does the Basel II Accord's emphasis on risk measurement influence the need for an interpretable and well-documented model?
@@ -67,3 +75,55 @@ In regulated financial environments, predictive performance alone is not suffici
 - Credit Scoring Approaches Guidelines (World Bank)
 - How to Develop a Credit Risk Model and Scorecard
 - Credit Risk Fundamentals (Corporate Finance Institute)
+
+## Reproducing the Project
+
+### Clone Repository
+
+```bash
+git clone <repository-url>
+cd credit-risk-model
+```
+
+### Create Environment
+
+```bash
+python -m venv venv
+source venv/bin/activate
+```
+
+Windows:
+
+```bash
+venv\Scripts\activate
+```
+
+### Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### Run Exploratory Analysis
+
+```bash
+jupyter notebook notebooks/eda.ipynb
+```
+
+### Run Data Processing Pipeline
+
+```bash
+python src/data_processing.py
+```
+
+### Run Model Training
+
+```bash
+python src/train.py
+```
+
+### Run API
+
+```bash
+uvicorn src.api.main:app --reload
+```
