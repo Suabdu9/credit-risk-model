@@ -1,0 +1,55 @@
+# Python
+
+**pycache**/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual Environments
+
+venv/
+.venv/
+env/
+
+# Jupyter
+
+.ipynb_checkpoints/
+
+# Data
+
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# MLflow
+
+mlruns/
+
+# Models
+
+models/
+artifacts/
+
+# IDE
+
+.vscode/
+.idea/
+
+# OS
+
+.DS_Store
+Thumbs.db
+
+# Logs
+
+*.log
+
+# Testing
+
+.pytest_cache/
+
+# Coverage
+
+.coverage
+htmlcov/
