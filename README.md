@@ -1,0 +1,69 @@
+# Credit Scoring Business Understanding
+
+## 1. How does the Basel II Accord's emphasis on risk measurement influence the need for an interpretable and well-documented model?
+
+The Basel II Accord requires financial institutions to maintain robust risk management frameworks and demonstrate how credit risk is measured, monitored, and controlled. As a result, credit scoring models must be transparent, explainable, and thoroughly documented.
+
+Interpretability is important because regulators, auditors, and business stakeholders need to understand how risk predictions are generated and which factors influence lending decisions. A well-documented model provides evidence of data sources, feature engineering steps, modeling assumptions, validation procedures, and performance metrics. This documentation supports regulatory compliance, facilitates model governance, and enables ongoing monitoring and recalibration when customer behavior or market conditions change.
+
+Therefore, Basel II encourages the use of modeling approaches that balance predictive performance with transparency, reproducibility, and accountability.
+
+## 2. Without a direct "default" label, why is a proxy variable necessary, and what business risks does proxy-based prediction introduce?
+
+The available dataset contains transaction information but does not include a direct indicator of whether a customer defaulted on a loan. Since supervised machine learning models require labeled examples, a proxy variable must be created to represent credit risk.
+
+In this project, customer behavior patterns derived from Recency, Frequency, and Monetary (RFM) metrics can be used to identify groups of customers who exhibit characteristics associated with higher or lower risk. Customers with infrequent activity, long inactivity periods, or low transaction value may be classified as higher-risk customers, while active and consistent customers may be classified as lower-risk customers.
+
+However, proxy variables introduce several business risks:
+
+* The proxy may not accurately represent actual default behavior.
+* Incorrect labeling can introduce bias into the model.
+* Good customers may be classified as risky (false positives).
+* Risky customers may be classified as safe (false negatives).
+* Lending decisions based on imperfect proxies can affect profitability and customer trust.
+
+Therefore, the proxy definition must be carefully justified, documented, and validated to ensure it reasonably reflects credit risk.
+
+## 3. What are the key trade-offs between a simple, interpretable model (e.g., Logistic Regression with WoE) and a high-performance model (e.g., Gradient Boosting) in a regulated financial context?
+
+### Logistic Regression with Weight of Evidence (WoE)
+
+Advantages:
+
+* Highly interpretable and easy to explain.
+* Coefficients directly indicate the direction and magnitude of risk factors.
+* Easier to validate and document for regulatory review.
+* Widely accepted in traditional credit scoring environments.
+* Supports creation of transparent scorecards.
+
+Disadvantages:
+
+* May struggle to capture complex nonlinear relationships.
+* Typically achieves lower predictive performance compared to advanced machine learning models.
+
+### Gradient Boosting Models
+
+Advantages:
+
+* Often achieve higher predictive accuracy.
+* Capture nonlinear patterns and feature interactions automatically.
+* Better suited for complex behavioral datasets.
+
+Disadvantages:
+
+* Less interpretable and more difficult to explain.
+* Harder to justify individual lending decisions.
+* More challenging to validate, monitor, and document.
+* May require additional explainability techniques such as SHAP values.
+
+### Trade-off Summary
+
+In regulated financial environments, predictive performance alone is not sufficient. Institutions must balance accuracy with interpretability, transparency, and regulatory compliance. Logistic Regression with WoE provides stronger explainability and governance, while Gradient Boosting may deliver superior predictive power. A practical approach is to compare both models and evaluate whether the performance improvement of the complex model justifies the additional complexity and regulatory burden.
+
+## References
+
+- Credit Scoring Statistical Analysis (Sinica)
+- Alternative Credit Scoring (HKMA)
+- Credit Scoring Approaches Guidelines (World Bank)
+- How to Develop a Credit Risk Model and Scorecard
+- Credit Risk Fundamentals (Corporate Finance Institute)
