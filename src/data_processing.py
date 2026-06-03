@@ -206,16 +206,17 @@ def create_rfm_target(df):
     ).astype(int)
 
     rfm.to_csv(
-    "data/processed/rfm_customer_segments.csv",
-    index=False
+        "data/processed/rfm_customer_segments.csv", 
+        index=False
     )
-    
+
     return rfm[
         [
             "CustomerId",
             "is_high_risk"
         ]
     ]
+
 
 def preprocess_data(df):
     """
