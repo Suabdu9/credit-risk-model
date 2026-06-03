@@ -7,6 +7,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.cluster import KMeans
 
 
 # =====================================================
@@ -101,6 +102,121 @@ class DatetimeFeatureExtractor(BaseEstimator, TransformerMixin):
 # Main Processing Function
 # =====================================================
 
+def create_rfm_target(df):
+    """
+    Create proxy credit risk target using RFM analysis and KMeans clustering.
+    """
+
+    rfm_df = df.copy()
+
+    # Ensure datetime
+    rfm_df["TransactionStartTime"] = pd.to_datetime(
+        rfm_df["TransactionStartTime"]
+    )
+
+    # Snapshot date
+    snapshot_date = (
+        rfm_df["TransactionStartTime"].max()
+        + pd.Timedelta(days=1)
+    )
+
+    # Calculate RFM
+    rfm = (
+        rfm_df.groupby("CustomerId")
+        .agg(
+            Recency=(
+                "TransactionStartTime",
+                lambda x: (
+                    snapshot_date - x.max()
+                ).days
+            ),
+            Frequency=(
+                "TransactionId",
+                "count"
+            ),
+            Monetary=(
+                "Amount",
+                "sum"
+            )
+        )
+        .reset_index()
+    )
+
+    # Scale RFM
+    scaler = StandardScaler()
+
+    rfm_scaled = scaler.fit_transform(
+        rfm[
+            [
+                "Recency",
+                "Frequency",
+                "Monetary"
+            ]
+        ]
+    )
+
+    # Cluster customers
+    kmeans = KMeans(
+        n_clusters=3,
+        random_state=42,
+        n_init=10
+    )
+
+    rfm["cluster"] = kmeans.fit_predict(
+        rfm_scaled
+    )
+
+    # Determine high-risk cluster
+    cluster_summary = (
+        rfm.groupby("cluster")
+        .agg(
+            {
+                "Recency": "mean",
+                "Frequency": "mean",
+                "Monetary": "mean"
+            }
+        )
+    )
+
+    print("\nCluster Summary")
+    print(cluster_summary)
+    cluster_summary.to_csv(
+        "data/processed/rfm_cluster_summary.csv"
+    )
+
+    high_risk_cluster = (
+        cluster_summary
+        .sort_values(
+            by=[
+                "Frequency",
+                "Monetary",
+                "Recency"
+            ],
+            ascending=[
+                True,
+                True,
+                False
+            ]
+            )
+            .index[0]
+    )
+
+    rfm["is_high_risk"] = (
+        rfm["cluster"] == high_risk_cluster
+    ).astype(int)
+
+    rfm.to_csv(
+    "data/processed/rfm_customer_segments.csv",
+    index=False
+    )
+    
+    return rfm[
+        [
+            "CustomerId",
+            "is_high_risk"
+        ]
+    ]
+
 def preprocess_data(df):
     """
     Apply feature engineering and preprocessing.
@@ -109,6 +225,14 @@ def preprocess_data(df):
     # Feature Engineering
     df = AggregateFeatureCreator().transform(df)
     df = DatetimeFeatureExtractor().transform(df)
+
+    risk_labels = create_rfm_target(df)
+
+    df = df.merge(
+         risk_labels,
+         on="CustomerId",
+         how="left"
+    )
 
     # Drop unnecessary columns
     drop_columns = [
@@ -132,9 +256,13 @@ def preprocess_data(df):
         "ChannelId"
     ]
 
+    target_column = "is_high_risk"
+
     numerical_features = [
-        col for col in df.columns
+        col
+        for col in df.columns
         if col not in categorical_features
+        and col != target_column
     ]
 
     # Pipelines
@@ -180,6 +308,10 @@ def preprocess_data(df):
     processed_df = pd.DataFrame(
         processed_array,
         columns=feature_names
+    )
+
+    processed_df[target_column] = (
+        df[target_column].values
     )
 
     return processed_df, preprocessor
