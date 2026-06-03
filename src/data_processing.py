@@ -187,18 +187,10 @@ def create_rfm_target(df):
     high_risk_cluster = (
         cluster_summary
         .sort_values(
-            by=[
-                "Frequency",
-                "Monetary",
-                "Recency"
-            ],
-            ascending=[
-                True,
-                True,
-                False
-            ]
-            )
-            .index[0]
+            by=["Frequency", "Monetary", "Recency"],
+            ascending=[True, True, False],
+        )
+        .index[0]
     )
 
     rfm["is_high_risk"] = (
@@ -206,7 +198,7 @@ def create_rfm_target(df):
     ).astype(int)
 
     rfm.to_csv(
-        "data/processed/rfm_customer_segments.csv", 
+        "data/processed/rfm_customer_segments.csv",
         index=False
     )
 
