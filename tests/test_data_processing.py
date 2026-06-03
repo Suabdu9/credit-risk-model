@@ -39,6 +39,7 @@ def test_datetime_features_created():
     assert "transaction_day" in result.columns
     assert "transaction_month" in result.columns
 
+
 def test_aggregate_feature_creation():
 
     sample = pd.DataFrame({
