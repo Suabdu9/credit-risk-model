@@ -1,8 +1,16 @@
+import sys
+from pathlib import Path
+
+sys.path.append(
+    str(Path(__file__).resolve().parents[1])
+)
+
 import pandas as pd
+
 from src.data_processing import (
     AggregateFeatureCreator,
     DatetimeFeatureExtractor
-    )
+)
 
 
 def test_aggregate_columns_created():
