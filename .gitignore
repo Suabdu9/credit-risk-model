@@ -25,10 +25,13 @@ data/processed/*
 # MLflow
 
 mlruns/
+mlartifacts/
 
 # Models
 
 models/
+*.pkl
+*.joblib
 artifacts/
 
 # IDE
